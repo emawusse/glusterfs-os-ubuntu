@@ -1,2 +1,2 @@
-# glusterfs-os-ubuntu
+# Glusterfs-0S-Ubuntu
 Ce code ansible est le déploiement du systeme de stockage distribué Glusterfs avec type de volume répliqué ( 3 noeuds )
