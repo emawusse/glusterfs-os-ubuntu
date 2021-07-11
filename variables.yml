@@ -6,7 +6,7 @@ ip_noeud1: x
 ip_noeud2: x
 ip_noeud3: x
 
-repertoire_brick: /glusterfs/brick1/store
+repertoire_brick: /glusterfs/brick1/brick
 repertoire_client_glusterfs: /data/
-volume_glusterfs_name: myvol
-volume_glusterfs_monte: manager1:/myvol
+volume_glusterfs_name: vol-glusterfs
+volume_glusterfs_monte: manager1:/vol-glusterfs
