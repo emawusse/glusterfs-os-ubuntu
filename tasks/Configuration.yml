@@ -1,0 +1,108 @@
+#Mise à Jour des packets
+- name: Mise à Jour des packets
+  apt:
+    name: '*'
+    state: latest
+
+# #Préparation du fichier /etc/hosts
+- name: Préparation du fichier /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ip_noeud1}} {{host1}}
+      {{ip_noeud2}} {{host2}}
+      {{ip_noeud3}} {{host3}}
+
+#Installation des packages & mise à jour
+- name: Installation de software-properties-common
+  apt: 
+    name: 
+      - software-properties-common
+    state: present
+
+- name: Ajout du repos PPA-Gluster
+  apt_repository:
+    repo: 'ppa:gluster/glusterfs-7'
+    state: present
+    update_cache: true
+
+- name: Mise à Jour des packets après installation des packages
+  apt:
+    name: '*'
+    state: latest
+
+#Installation de Repository Glusterfs
+- name: Installation de glusterfs
+  apt:
+    name:
+      - glusterfs-server
+      - glusterfs-client
+    state: present
+
+#Rédemarrer le service glusterfs
+- name: Redemarrage de glusterfs
+  service:
+    name: glusterd
+    state: started
+    enabled: yes
+
+#Pré-requis disk
+- name: Pre-requis disk
+  vars:
+    gluster_infra_disktype: JBOD
+    gluster_infra_dalign: 256K
+    gluster_infra_lvm: { autoexpand_threshold: 70, autoexpand_percentage: 15,}
+    fstrim_service: {
+       enabled: yes,
+       schedule: {         
+         hour: "{{ range(1, 4) | random() }}"
+       }
+      }
+
+#Creation du physical volume & groupe volume
+    gluster_infra_volume_groups:
+      - { vgname: 'vg_sdb', pvname: '/dev/sdb' }
+
+    gluster_infra_thick_lvs:
+     - { vgname: 'vg_sdb', lvname: 'lv_brick1', size: '100%VG' }
+
+#Montage des disques dans les répertoires
+    gluster_infra_mount_devices:
+     - { path: '/glusterfs/brick1', vgname: 'vg_sdb', lvname: 'lv_brick1' }
+
+  include_role:
+    name: gluster.infra
+    
+#Creation de volume de type répliqué Gluster
+- name: Creation de volume de type répliqué 3 Glusterfs
+  vars:
+    gluster_cluster_hosts:
+      - "{{ip_noeud1}}"
+      - "{{ip_noeud2}}"
+      - "{{ip_noeud3}}"
+    gluster_cluster_volume: "{{volume_glusterfs_name}}"
+    gluster_cluster_replica_count: 3
+    gluster_cluster_force: 'yes'
+    gluster_cluster_transport: 'tcp'
+    gluster_cluster_bricks: "{{repertoire_brick}}"
+    gluster_cluster_state: present
+
+  include_role:
+    name: gluster.cluster
+
+##### Partage du volume Gluster pour un Client #####
+- name: Creation du repertoire /data/ pour le montage glusterfs
+  file:
+    path: "{{repertoire_client_glusterfs}}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Partage du volume Gluster pour un Client
+  mount:
+    path: "{{repertoire_client_glusterfs}}"
+    src: "{{volume_glusterfs_monte}}"
+    fstype: glusterfs
+    opts: "defaults,_netdev,backupvolfile-server={{host2}}"
+    state: mounted

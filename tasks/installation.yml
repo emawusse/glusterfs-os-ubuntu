@@ -1,0 +1,16 @@
+---
+- become: yes
+  hosts: all
+  remote_user: root
+  gather_facts: false
+  name: Pre-requis & Installation de glusterFs & Montage du Répertoire glusterFs
+  tasks:
+
+    #forcer mon fichier de variable
+    - name: Include variables from vars.yml
+      include_vars: ../variables.yml
+
+    # #Pre-requis & Installation de GlusterFs
+    - name: Pre-requis & Installation de glusterFs & Montage du Répertoire glusterFs
+      include: Configuration.yml
+
