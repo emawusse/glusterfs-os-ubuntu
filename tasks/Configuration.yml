@@ -5,13 +5,12 @@
     state: latest
 
 # #Préparation du fichier /etc/hosts
-- name: Préparation du fichier /etc/hosts
-  blockinfile:
-    path: /etc/hosts
-    block: |
-      {{ip_noeud1}} {{host1}}
-      {{ip_noeud2}} {{host2}}
-      {{ip_noeud3}} {{host3}}
+- name: Add IP address glusterfs On /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }}"
+    state: present
+  with_items: "{{ groups.managers }}"
 
 #Installation des packages & mise à jour
 - name: Installation de software-properties-common
