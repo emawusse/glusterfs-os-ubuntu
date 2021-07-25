@@ -1,6 +1,6 @@
 # Glusterfs-os-Ubuntu 
 # [Type de Volume GlusterFs : Répliqué, 3 noeuds]
-Ce code ansible est le déploiement du systeme de stockage distribué Glusterfs avec type de volume répliqué comme pool de stockage pour un cluster swarm composé de noeuds managers & workers
+Ce code ansible est le déploiement du systeme de stockage distribué Glusterfs avec type de volume répliqué comme pool de stockage pour un cluster swarm composé de 3 noeuds tous des managers
 
 ## Pre-requis
 
