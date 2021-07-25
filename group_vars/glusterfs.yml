@@ -1,0 +1,12 @@
+host1: x
+host2: x
+host3: x
+
+ip_noeud1: x
+ip_noeud2: x
+ip_noeud3: x
+
+repertoire_brick: x
+repertoire_client_glusterfs: x
+volume_glusterfs_name: x
+volume_glusterfs_monte: x
