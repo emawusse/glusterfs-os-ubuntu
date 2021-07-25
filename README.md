@@ -10,7 +10,7 @@ Ce code ansible est le déploiement du systeme de stockage distribué Glusterfs 
 ## Comment utilisé le projet ?
 
 * Vous devez cloner le projet : git clone https://github.com/enassar225/glusterfs-os-ubuntu.git
-* Renseignez les adresses ip & le nom de vos noeuds, modifiez si besoin les noms des variables
+* Renseignez les adresses ip & le nom de vos noeuds, modifiez si besoin les noms des variables qui se trouvent dans le répertoire group_vars
 * Renseignez les infos pour le fichier inventory
 * Lancez votre playbook : ansible-playbook -i inventory.yml task/installation.yml
 
